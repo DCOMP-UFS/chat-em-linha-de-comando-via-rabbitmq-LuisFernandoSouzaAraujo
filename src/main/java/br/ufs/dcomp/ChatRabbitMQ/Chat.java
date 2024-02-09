@@ -1,9 +1,7 @@
 package br.ufs.dcomp.ChatRabbitMQ;
 
 import com.rabbitmq.client.*;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
@@ -12,7 +10,7 @@ public class Chat {
     private static Channel channel;
     private static String currentUser;
     private static String targetUser = "";
-
+    private static String targetGroup = "";
     public static void main(String[] argv) throws Exception {
         // Configuração inicial
         ConnectionFactory factory = new ConnectionFactory();
@@ -27,44 +25,114 @@ public class Chat {
         System.out.print("User: ");
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         currentUser = reader.readLine();
-
-        // Declaração da fila do usuário atual
+        
+        
         String queueName = channel.queueDeclare(currentUser, false, false, false, null).getQueue();
         channel.queueBind(queueName, EXCHANGE_NAME, currentUser);
 
-        // Consumidor para receber mensagens
         Consumer consumer = new DefaultConsumer(channel) {
-            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
-                    throws IOException {
-                String message = new String(body, "UTF-8");
-                String sender = envelope.getRoutingKey();
-                printReceivedMessage(sender, message);
+        public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                
+                MensagemProto.Mensagem mensagemBody = MensagemProto.Mensagem.parseFrom(body);
+                
+                String emissor = mensagemBody.getEmissor();
+                String data = mensagemBody.getData();
+                String grupo = mensagemBody.getGrupo();
+                String mensagem = mensagemBody.getMensagem();
+                
+                printReceivedMessage(emissor, mensagem, data, grupo);
             }
         };
         channel.basicConsume(queueName, true, consumer);
-
-        // Loop de envio de mensagens
+        
+        
         while (true) {
-            System.out.print(targetUser.isEmpty() ? ">> " : "@" + targetUser + ">> ");
+            String input = targetUser.isEmpty() ? ">> " : "@" + targetUser + ">> ";
+            input = targetGroup.isEmpty() ? input : "#" + targetGroup + ">> ";
+            System.out.print(input);
             String message = reader.readLine();
-            
-            // Verifica se é um comando para mudar o destinatário
+
+            // Verifica se é um comando para mudar o destinatário, criar grupo, adicionar ou remover usuário
             if (message.startsWith("@")) {
                 targetUser = message.substring(1);
-                continue;
-            }
-                
-            // Envia a mensagem para o destinatário atual
-            if (!targetUser.isEmpty()) {
-                channel.basicPublish(EXCHANGE_NAME, targetUser, null, message.getBytes("UTF-8"));
+                targetGroup = ""; // Limpa o grupo ao enviar DMs
+            } else if (message.startsWith("!addGroup ")) {
+                String groupName = message.substring(10);
+                createGroup(groupName);
+            } else if (message.startsWith("!addUser ")) {
+                String[] parts = message.split(" ");
+                addUserToGroup(parts[1], parts[2]);
+            } else if (message.startsWith("!delFromGroup ")) {
+                String[] parts = message.split(" ");
+                removeUserGroup(parts[1], parts[2]);
+            } else if (message.startsWith("!removeGroup ")) {
+                String[] parts = message.split(" ");
+                removeGroup(parts[1]);
+            } else if (message.startsWith("#")) {
+                targetGroup = message.substring(1);
+                targetUser = ""; // Limpa o usuário ao enviar para o grupo
+            } else {
+                sendMessage(message);
             }
         }
     }
-
-    private static void printReceivedMessage(String sender, String message) {
+    
+    private static void sendMessage(String messageText) throws Exception {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy 'às' HH:mm");
         String dateString = formatter.format(new Date());
-        System.out.println("(" + dateString + ") " + sender + " diz: " + message);
+
+        MensagemProto.Mensagem mensagemBuild = MensagemProto.Mensagem.newBuilder()
+            .setEmissor(currentUser)
+            .setData(dateString)
+            .setGrupo(targetGroup)
+            .setMensagem(messageText)
+            .build();
+
+        byte[] messageBytes = mensagemBuild.toByteArray();
+
+        if (!targetGroup.isEmpty()) {
+            // Envia para um grupo (exchange do tipo fanout)
+            channel.basicPublish(targetGroup, "", null, messageBytes);
+        } else if (!targetUser.isEmpty()) {
+            // Envia para um usuário específico
+            channel.basicPublish(EXCHANGE_NAME, targetUser, null, messageBytes);
+        }
+    }
+    
+    private static void createGroup(String groupName) throws IOException {
+        
+        channel.exchangeDeclare(groupName, "fanout");
+        
+        System.out.println("Grupo '" + groupName + "' criado.");
+        
+        // O usuário que cria o grupo é automaticamente adicionado ao mesmo
+        addUserToGroup(currentUser, groupName);
+    }
+    
+    private static void addUserToGroup(String userName, String groupName) throws IOException {
+        // Vincula a fila do usuário ao exchange do grupo
+        String queueName = channel.queueDeclare(userName, false, false, false, null).getQueue();
+        channel.queueBind(queueName, groupName, "");
+        System.out.println("Usuário '" + userName + "' adicionado ao grupo '" + groupName + "'.");
+    }
+    
+    private static void removeUserGroup(String userName, String groupName) throws IOException {
+        channel.queueUnbind(userName, groupName, "");
+    }
+    
+    private static void removeGroup(String groupName) throws IOException {
+        channel.exchangeDelete(groupName);
+    }
+
+    private static void printReceivedMessage(String emissor, String mensagem, String data, String grupo) {
+        // SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy 'às' HH:mm");
+        // String dateString = formatter.format(new Date());
+        if (grupo == "") {
+            System.out.println("(" + data + ") " + emissor + " diz: " + mensagem);
+        } else {
+            System.out.println("(" + data + ") " + emissor + "#" + grupo + " diz: " + mensagem);
+        }
+        
         System.out.print(targetUser.isEmpty() ? ">> " : "@" + targetUser + ">> ");
     }
 }
