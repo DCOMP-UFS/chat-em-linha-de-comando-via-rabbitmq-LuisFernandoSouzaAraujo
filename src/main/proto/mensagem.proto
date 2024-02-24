@@ -4,11 +4,20 @@ package br.ufs.dcomp.ChatRabbitMQ;
 
 option java_outer_classname = "MensagemProto";
 
-message Mensagem {
-    string emissor = 1;
-    string data = 2;
-    string hora = 3;
-    string grupo = 4;
-    string mensagem = 5;
-}
+// message Mensagem {
+//     string emissor = 1;
+//     string data = 2;
+//     string hora = 3;
+//     string grupo = 4;
+//     string mensagem = 5;
+// }
 
+message Mensagem {
+  string emissor = 1;
+  string data = 2;
+  string grupo = 3;
+  string mensagem = 4;
+  string nomeArquivo = 5;
+  bytes conteudoArquivo = 6;
+  string tipoMime = 7;
+}
