@@ -43,40 +43,58 @@ public final class MensagemProto {
         getDataBytes();
 
     /**
-     * <code>string hora = 3;</code>
-     * @return The hora.
-     */
-    java.lang.String getHora();
-    /**
-     * <code>string hora = 3;</code>
-     * @return The bytes for hora.
-     */
-    com.google.protobuf.ByteString
-        getHoraBytes();
-
-    /**
-     * <code>string grupo = 4;</code>
+     * <code>string grupo = 3;</code>
      * @return The grupo.
      */
     java.lang.String getGrupo();
     /**
-     * <code>string grupo = 4;</code>
+     * <code>string grupo = 3;</code>
      * @return The bytes for grupo.
      */
     com.google.protobuf.ByteString
         getGrupoBytes();
 
     /**
-     * <code>string mensagem = 5;</code>
+     * <code>string mensagem = 4;</code>
      * @return The mensagem.
      */
     java.lang.String getMensagem();
     /**
-     * <code>string mensagem = 5;</code>
+     * <code>string mensagem = 4;</code>
      * @return The bytes for mensagem.
      */
     com.google.protobuf.ByteString
         getMensagemBytes();
+
+    /**
+     * <code>string nomeArquivo = 5;</code>
+     * @return The nomeArquivo.
+     */
+    java.lang.String getNomeArquivo();
+    /**
+     * <code>string nomeArquivo = 5;</code>
+     * @return The bytes for nomeArquivo.
+     */
+    com.google.protobuf.ByteString
+        getNomeArquivoBytes();
+
+    /**
+     * <code>bytes conteudoArquivo = 6;</code>
+     * @return The conteudoArquivo.
+     */
+    com.google.protobuf.ByteString getConteudoArquivo();
+
+    /**
+     * <code>string tipoMime = 7;</code>
+     * @return The tipoMime.
+     */
+    java.lang.String getTipoMime();
+    /**
+     * <code>string tipoMime = 7;</code>
+     * @return The bytes for tipoMime.
+     */
+    com.google.protobuf.ByteString
+        getTipoMimeBytes();
   }
   /**
    * Protobuf type {@code br.ufs.dcomp.ChatRabbitMQ.Mensagem}
@@ -93,9 +111,11 @@ public final class MensagemProto {
     private Mensagem() {
       emissor_ = "";
       data_ = "";
-      hora_ = "";
       grupo_ = "";
       mensagem_ = "";
+      nomeArquivo_ = "";
+      conteudoArquivo_ = com.google.protobuf.ByteString.EMPTY;
+      tipoMime_ = "";
     }
 
     @java.lang.Override
@@ -143,19 +163,30 @@ public final class MensagemProto {
             case 26: {
               java.lang.String s = input.readStringRequireUtf8();
 
-              hora_ = s;
+              grupo_ = s;
               break;
             }
             case 34: {
               java.lang.String s = input.readStringRequireUtf8();
 
-              grupo_ = s;
+              mensagem_ = s;
               break;
             }
             case 42: {
               java.lang.String s = input.readStringRequireUtf8();
 
-              mensagem_ = s;
+              nomeArquivo_ = s;
+              break;
+            }
+            case 50: {
+
+              conteudoArquivo_ = input.readBytes();
+              break;
+            }
+            case 58: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              tipoMime_ = s;
               break;
             }
             default: {
@@ -266,48 +297,10 @@ public final class MensagemProto {
       }
     }
 
-    public static final int HORA_FIELD_NUMBER = 3;
-    private volatile java.lang.Object hora_;
-    /**
-     * <code>string hora = 3;</code>
-     * @return The hora.
-     */
-    @java.lang.Override
-    public java.lang.String getHora() {
-      java.lang.Object ref = hora_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        hora_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string hora = 3;</code>
-     * @return The bytes for hora.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getHoraBytes() {
-      java.lang.Object ref = hora_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        hora_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int GRUPO_FIELD_NUMBER = 4;
+    public static final int GRUPO_FIELD_NUMBER = 3;
     private volatile java.lang.Object grupo_;
     /**
-     * <code>string grupo = 4;</code>
+     * <code>string grupo = 3;</code>
      * @return The grupo.
      */
     @java.lang.Override
@@ -324,7 +317,7 @@ public final class MensagemProto {
       }
     }
     /**
-     * <code>string grupo = 4;</code>
+     * <code>string grupo = 3;</code>
      * @return The bytes for grupo.
      */
     @java.lang.Override
@@ -342,10 +335,10 @@ public final class MensagemProto {
       }
     }
 
-    public static final int MENSAGEM_FIELD_NUMBER = 5;
+    public static final int MENSAGEM_FIELD_NUMBER = 4;
     private volatile java.lang.Object mensagem_;
     /**
-     * <code>string mensagem = 5;</code>
+     * <code>string mensagem = 4;</code>
      * @return The mensagem.
      */
     @java.lang.Override
@@ -362,7 +355,7 @@ public final class MensagemProto {
       }
     }
     /**
-     * <code>string mensagem = 5;</code>
+     * <code>string mensagem = 4;</code>
      * @return The bytes for mensagem.
      */
     @java.lang.Override
@@ -374,6 +367,93 @@ public final class MensagemProto {
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         mensagem_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int NOMEARQUIVO_FIELD_NUMBER = 5;
+    private volatile java.lang.Object nomeArquivo_;
+    /**
+     * <code>string nomeArquivo = 5;</code>
+     * @return The nomeArquivo.
+     */
+    @java.lang.Override
+    public java.lang.String getNomeArquivo() {
+      java.lang.Object ref = nomeArquivo_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        nomeArquivo_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string nomeArquivo = 5;</code>
+     * @return The bytes for nomeArquivo.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getNomeArquivoBytes() {
+      java.lang.Object ref = nomeArquivo_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        nomeArquivo_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int CONTEUDOARQUIVO_FIELD_NUMBER = 6;
+    private com.google.protobuf.ByteString conteudoArquivo_;
+    /**
+     * <code>bytes conteudoArquivo = 6;</code>
+     * @return The conteudoArquivo.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getConteudoArquivo() {
+      return conteudoArquivo_;
+    }
+
+    public static final int TIPOMIME_FIELD_NUMBER = 7;
+    private volatile java.lang.Object tipoMime_;
+    /**
+     * <code>string tipoMime = 7;</code>
+     * @return The tipoMime.
+     */
+    @java.lang.Override
+    public java.lang.String getTipoMime() {
+      java.lang.Object ref = tipoMime_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        tipoMime_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string tipoMime = 7;</code>
+     * @return The bytes for tipoMime.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getTipoMimeBytes() {
+      java.lang.Object ref = tipoMime_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        tipoMime_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -400,14 +480,20 @@ public final class MensagemProto {
       if (!getDataBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, data_);
       }
-      if (!getHoraBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, hora_);
-      }
       if (!getGrupoBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, grupo_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, grupo_);
       }
       if (!getMensagemBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, mensagem_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, mensagem_);
+      }
+      if (!getNomeArquivoBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, nomeArquivo_);
+      }
+      if (!conteudoArquivo_.isEmpty()) {
+        output.writeBytes(6, conteudoArquivo_);
+      }
+      if (!getTipoMimeBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 7, tipoMime_);
       }
       unknownFields.writeTo(output);
     }
@@ -424,14 +510,21 @@ public final class MensagemProto {
       if (!getDataBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, data_);
       }
-      if (!getHoraBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, hora_);
-      }
       if (!getGrupoBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, grupo_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, grupo_);
       }
       if (!getMensagemBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, mensagem_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, mensagem_);
+      }
+      if (!getNomeArquivoBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, nomeArquivo_);
+      }
+      if (!conteudoArquivo_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(6, conteudoArquivo_);
+      }
+      if (!getTipoMimeBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, tipoMime_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -452,12 +545,16 @@ public final class MensagemProto {
           .equals(other.getEmissor())) return false;
       if (!getData()
           .equals(other.getData())) return false;
-      if (!getHora()
-          .equals(other.getHora())) return false;
       if (!getGrupo()
           .equals(other.getGrupo())) return false;
       if (!getMensagem()
           .equals(other.getMensagem())) return false;
+      if (!getNomeArquivo()
+          .equals(other.getNomeArquivo())) return false;
+      if (!getConteudoArquivo()
+          .equals(other.getConteudoArquivo())) return false;
+      if (!getTipoMime()
+          .equals(other.getTipoMime())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -473,12 +570,16 @@ public final class MensagemProto {
       hash = (53 * hash) + getEmissor().hashCode();
       hash = (37 * hash) + DATA_FIELD_NUMBER;
       hash = (53 * hash) + getData().hashCode();
-      hash = (37 * hash) + HORA_FIELD_NUMBER;
-      hash = (53 * hash) + getHora().hashCode();
       hash = (37 * hash) + GRUPO_FIELD_NUMBER;
       hash = (53 * hash) + getGrupo().hashCode();
       hash = (37 * hash) + MENSAGEM_FIELD_NUMBER;
       hash = (53 * hash) + getMensagem().hashCode();
+      hash = (37 * hash) + NOMEARQUIVO_FIELD_NUMBER;
+      hash = (53 * hash) + getNomeArquivo().hashCode();
+      hash = (37 * hash) + CONTEUDOARQUIVO_FIELD_NUMBER;
+      hash = (53 * hash) + getConteudoArquivo().hashCode();
+      hash = (37 * hash) + TIPOMIME_FIELD_NUMBER;
+      hash = (53 * hash) + getTipoMime().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -616,11 +717,15 @@ public final class MensagemProto {
 
         data_ = "";
 
-        hora_ = "";
-
         grupo_ = "";
 
         mensagem_ = "";
+
+        nomeArquivo_ = "";
+
+        conteudoArquivo_ = com.google.protobuf.ByteString.EMPTY;
+
+        tipoMime_ = "";
 
         return this;
       }
@@ -650,9 +755,11 @@ public final class MensagemProto {
         br.ufs.dcomp.ChatRabbitMQ.MensagemProto.Mensagem result = new br.ufs.dcomp.ChatRabbitMQ.MensagemProto.Mensagem(this);
         result.emissor_ = emissor_;
         result.data_ = data_;
-        result.hora_ = hora_;
         result.grupo_ = grupo_;
         result.mensagem_ = mensagem_;
+        result.nomeArquivo_ = nomeArquivo_;
+        result.conteudoArquivo_ = conteudoArquivo_;
+        result.tipoMime_ = tipoMime_;
         onBuilt();
         return result;
       }
@@ -709,16 +816,23 @@ public final class MensagemProto {
           data_ = other.data_;
           onChanged();
         }
-        if (!other.getHora().isEmpty()) {
-          hora_ = other.hora_;
-          onChanged();
-        }
         if (!other.getGrupo().isEmpty()) {
           grupo_ = other.grupo_;
           onChanged();
         }
         if (!other.getMensagem().isEmpty()) {
           mensagem_ = other.mensagem_;
+          onChanged();
+        }
+        if (!other.getNomeArquivo().isEmpty()) {
+          nomeArquivo_ = other.nomeArquivo_;
+          onChanged();
+        }
+        if (other.getConteudoArquivo() != com.google.protobuf.ByteString.EMPTY) {
+          setConteudoArquivo(other.getConteudoArquivo());
+        }
+        if (!other.getTipoMime().isEmpty()) {
+          tipoMime_ = other.tipoMime_;
           onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -902,85 +1016,9 @@ public final class MensagemProto {
         return this;
       }
 
-      private java.lang.Object hora_ = "";
-      /**
-       * <code>string hora = 3;</code>
-       * @return The hora.
-       */
-      public java.lang.String getHora() {
-        java.lang.Object ref = hora_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          hora_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string hora = 3;</code>
-       * @return The bytes for hora.
-       */
-      public com.google.protobuf.ByteString
-          getHoraBytes() {
-        java.lang.Object ref = hora_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          hora_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string hora = 3;</code>
-       * @param value The hora to set.
-       * @return This builder for chaining.
-       */
-      public Builder setHora(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        hora_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string hora = 3;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearHora() {
-        
-        hora_ = getDefaultInstance().getHora();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string hora = 3;</code>
-       * @param value The bytes for hora to set.
-       * @return This builder for chaining.
-       */
-      public Builder setHoraBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        hora_ = value;
-        onChanged();
-        return this;
-      }
-
       private java.lang.Object grupo_ = "";
       /**
-       * <code>string grupo = 4;</code>
+       * <code>string grupo = 3;</code>
        * @return The grupo.
        */
       public java.lang.String getGrupo() {
@@ -996,7 +1034,7 @@ public final class MensagemProto {
         }
       }
       /**
-       * <code>string grupo = 4;</code>
+       * <code>string grupo = 3;</code>
        * @return The bytes for grupo.
        */
       public com.google.protobuf.ByteString
@@ -1013,7 +1051,7 @@ public final class MensagemProto {
         }
       }
       /**
-       * <code>string grupo = 4;</code>
+       * <code>string grupo = 3;</code>
        * @param value The grupo to set.
        * @return This builder for chaining.
        */
@@ -1028,7 +1066,7 @@ public final class MensagemProto {
         return this;
       }
       /**
-       * <code>string grupo = 4;</code>
+       * <code>string grupo = 3;</code>
        * @return This builder for chaining.
        */
       public Builder clearGrupo() {
@@ -1038,7 +1076,7 @@ public final class MensagemProto {
         return this;
       }
       /**
-       * <code>string grupo = 4;</code>
+       * <code>string grupo = 3;</code>
        * @param value The bytes for grupo to set.
        * @return This builder for chaining.
        */
@@ -1056,7 +1094,7 @@ public final class MensagemProto {
 
       private java.lang.Object mensagem_ = "";
       /**
-       * <code>string mensagem = 5;</code>
+       * <code>string mensagem = 4;</code>
        * @return The mensagem.
        */
       public java.lang.String getMensagem() {
@@ -1072,7 +1110,7 @@ public final class MensagemProto {
         }
       }
       /**
-       * <code>string mensagem = 5;</code>
+       * <code>string mensagem = 4;</code>
        * @return The bytes for mensagem.
        */
       public com.google.protobuf.ByteString
@@ -1089,7 +1127,7 @@ public final class MensagemProto {
         }
       }
       /**
-       * <code>string mensagem = 5;</code>
+       * <code>string mensagem = 4;</code>
        * @param value The mensagem to set.
        * @return This builder for chaining.
        */
@@ -1104,7 +1142,7 @@ public final class MensagemProto {
         return this;
       }
       /**
-       * <code>string mensagem = 5;</code>
+       * <code>string mensagem = 4;</code>
        * @return This builder for chaining.
        */
       public Builder clearMensagem() {
@@ -1114,7 +1152,7 @@ public final class MensagemProto {
         return this;
       }
       /**
-       * <code>string mensagem = 5;</code>
+       * <code>string mensagem = 4;</code>
        * @param value The bytes for mensagem to set.
        * @return This builder for chaining.
        */
@@ -1126,6 +1164,192 @@ public final class MensagemProto {
   checkByteStringIsUtf8(value);
         
         mensagem_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object nomeArquivo_ = "";
+      /**
+       * <code>string nomeArquivo = 5;</code>
+       * @return The nomeArquivo.
+       */
+      public java.lang.String getNomeArquivo() {
+        java.lang.Object ref = nomeArquivo_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          nomeArquivo_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string nomeArquivo = 5;</code>
+       * @return The bytes for nomeArquivo.
+       */
+      public com.google.protobuf.ByteString
+          getNomeArquivoBytes() {
+        java.lang.Object ref = nomeArquivo_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          nomeArquivo_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string nomeArquivo = 5;</code>
+       * @param value The nomeArquivo to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNomeArquivo(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        nomeArquivo_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string nomeArquivo = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNomeArquivo() {
+        
+        nomeArquivo_ = getDefaultInstance().getNomeArquivo();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string nomeArquivo = 5;</code>
+       * @param value The bytes for nomeArquivo to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNomeArquivoBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        nomeArquivo_ = value;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString conteudoArquivo_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes conteudoArquivo = 6;</code>
+       * @return The conteudoArquivo.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getConteudoArquivo() {
+        return conteudoArquivo_;
+      }
+      /**
+       * <code>bytes conteudoArquivo = 6;</code>
+       * @param value The conteudoArquivo to set.
+       * @return This builder for chaining.
+       */
+      public Builder setConteudoArquivo(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        conteudoArquivo_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes conteudoArquivo = 6;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearConteudoArquivo() {
+        
+        conteudoArquivo_ = getDefaultInstance().getConteudoArquivo();
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object tipoMime_ = "";
+      /**
+       * <code>string tipoMime = 7;</code>
+       * @return The tipoMime.
+       */
+      public java.lang.String getTipoMime() {
+        java.lang.Object ref = tipoMime_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          tipoMime_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string tipoMime = 7;</code>
+       * @return The bytes for tipoMime.
+       */
+      public com.google.protobuf.ByteString
+          getTipoMimeBytes() {
+        java.lang.Object ref = tipoMime_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          tipoMime_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string tipoMime = 7;</code>
+       * @param value The tipoMime to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTipoMime(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        tipoMime_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string tipoMime = 7;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTipoMime() {
+        
+        tipoMime_ = getDefaultInstance().getTipoMime();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string tipoMime = 7;</code>
+       * @param value The bytes for tipoMime to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTipoMimeBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        tipoMime_ = value;
         onChanged();
         return this;
       }
@@ -1197,10 +1421,11 @@ public final class MensagemProto {
   static {
     java.lang.String[] descriptorData = {
       "\n\035src/main/proto/mensagem.proto\022\031br.ufs." +
-      "dcomp.ChatRabbitMQ\"X\n\010Mensagem\022\017\n\007emisso" +
-      "r\030\001 \001(\t\022\014\n\004data\030\002 \001(\t\022\014\n\004hora\030\003 \001(\t\022\r\n\005g" +
-      "rupo\030\004 \001(\t\022\020\n\010mensagem\030\005 \001(\tB\017B\rMensagem" +
-      "Protob\006proto3"
+      "dcomp.ChatRabbitMQ\"\212\001\n\010Mensagem\022\017\n\007emiss" +
+      "or\030\001 \001(\t\022\014\n\004data\030\002 \001(\t\022\r\n\005grupo\030\003 \001(\t\022\020\n" +
+      "\010mensagem\030\004 \001(\t\022\023\n\013nomeArquivo\030\005 \001(\t\022\027\n\017" +
+      "conteudoArquivo\030\006 \001(\014\022\020\n\010tipoMime\030\007 \001(\tB" +
+      "\017B\rMensagemProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1211,7 +1436,7 @@ public final class MensagemProto {
     internal_static_br_ufs_dcomp_ChatRabbitMQ_Mensagem_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_br_ufs_dcomp_ChatRabbitMQ_Mensagem_descriptor,
-        new java.lang.String[] { "Emissor", "Data", "Hora", "Grupo", "Mensagem", });
+        new java.lang.String[] { "Emissor", "Data", "Grupo", "Mensagem", "NomeArquivo", "ConteudoArquivo", "TipoMime", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
