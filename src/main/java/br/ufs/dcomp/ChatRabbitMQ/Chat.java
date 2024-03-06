@@ -18,7 +18,7 @@ public class Chat {
     public static void main(String[] argv) throws Exception {
         // Configuração inicial
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("172.31.42.40");
+        factory.setHost("172.31.79.74");
         factory.setUsername("admin");
         factory.setPassword("password");
         Connection connection = factory.newConnection();
@@ -27,7 +27,6 @@ public class Chat {
         channelArq = connection.createChannel();
         channelArq.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT);
         
-
         // Captura do nome de usuário
         System.out.print("User: ");
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -47,7 +46,6 @@ public class Chat {
                 String data = mensagemBody.getData();
                 String grupo = mensagemBody.getGrupo();
                 String mensagem = mensagemBody.getMensagem();
-                
                 printReceivedMessage(emissor, mensagem, data, grupo);
             }
         };
@@ -55,7 +53,6 @@ public class Chat {
         
         Consumer consumerArq = new DefaultConsumer(channelArq) {
         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-                
                 MensagemProto.Mensagem mensagemBody = MensagemProto.Mensagem.parseFrom(body);
                 
                 String emissor = mensagemBody.getEmissor();
@@ -65,8 +62,10 @@ public class Chat {
                 String nomeArquivo = mensagemBody.getNomeArquivo();
                 byte[] conteudoArquivo = mensagemBody.getConteudoArquivo().toByteArray();
                 String tipoMime = mensagemBody.getTipoMime();
-                saveFile(conteudoArquivo, nomeArquivo);
-                printReceivedArq(emissor, nomeArquivo, data, grupo);
+                if (!nomeArquivo.isEmpty()) {
+                    saveFile(conteudoArquivo, nomeArquivo);
+                    printReceivedArq(emissor, nomeArquivo, data, grupo);
+                }
             }
         };
         channelArq.basicConsume(queueName, true, consumerArq);
