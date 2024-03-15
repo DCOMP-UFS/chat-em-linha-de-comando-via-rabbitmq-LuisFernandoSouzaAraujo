@@ -6,7 +6,14 @@ import java.nio.file.*;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import com.google.protobuf.ByteString;
-
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Chat {
     private static final String EXCHANGE_NAME = "direct_logs";
@@ -18,7 +25,7 @@ public class Chat {
     public static void main(String[] argv) throws Exception {
         // Configuração inicial
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("172.31.79.74");
+        factory.setHost("balancer-6ae749ace54cc51a.elb.us-west-2.amazonaws.com");
         factory.setUsername("admin");
         factory.setPassword("password");
         Connection connection = factory.newConnection();
@@ -93,7 +100,16 @@ public class Chat {
             } else if (message.startsWith("!removeGroup ")) {
                 String[] parts = message.split(" ");
                 removeGroup(parts[1]);
-            } else if (message.startsWith("!upload ")) {
+            } 
+            else if (message.startsWith("!listUsers ")) {
+                String[] parts = message.split(" ");
+                getData(parts[1]);
+            }
+            else if (message.startsWith("!listGroups")){
+                listarGrupos();
+            }
+            
+            else if (message.startsWith("!upload ")) {
                 String[] parts = message.split(" ");
                 new Thread(() -> {
                     try {
@@ -111,6 +127,109 @@ public class Chat {
             }
         }
     }
+    
+    private static void getData(String grupo) {
+        //http://balancer-6ae749ace54cc51a.elb.us-west-2.amazonaws.com/api/exchanges/%2F/SD/bindings/source
+    try {
+        String rabbitMqUrl = "balancer-6ae749ace54cc51a.elb.us-west-2.amazonaws.com";
+        String user = "admin";
+        String password = "password";
+        String apiUrl = "http://"+ rabbitMqUrl + "/api/exchanges/%2F/"+ grupo + "/bindings/source";
+
+        URL url = new URL(apiUrl);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Accept", "application/json");
+
+        
+        String authString = user + ":" + password;
+        String encodedAuthString = java.util.Base64.getEncoder().encodeToString(authString.getBytes());
+        conn.setRequestProperty("Authorization", "Basic " + encodedAuthString);
+
+        if (conn.getResponseCode() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+        }
+
+        BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+
+        StringBuilder response = new StringBuilder();
+        String output;
+        while ((output = br.readLine()) != null) {
+            response.append(output);
+        }
+
+        conn.disconnect();
+
+        
+        JSONArray jsonArray = new JSONArray(response.toString());
+        List<String> groupUsers = new ArrayList<>();
+        if (jsonArray.length() == 0) {
+            System.out.println("Não há usuários no grupo '" + grupo + "'.");
+        } else {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String username = jsonObject.getString("destination");
+                groupUsers.add(username);
+            }
+        }
+        String result = String.join(", ", groupUsers);
+        System.out.println(result);
+
+    } catch (IOException | JSONException e) {
+        e.printStackTrace();
+    }
+}
+
+private static void listarGrupos() {
+    //http://balancer-6ae749ace54cc51a.elb.us-west-2.amazonaws.com/api/queues/%2F/andre/bindings/
+    try {
+        String rabbitMqUrl = "balancer-6ae749ace54cc51a.elb.us-west-2.amazonaws.com";
+        String username = "admin";
+        String password = "password";
+        String apiUrl = "http://"+ rabbitMqUrl + "/api/queues/%2F/"+ currentUser + "/bindings/";
+
+        URL url = new URL(apiUrl);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Accept", "application/json");
+
+        // Set basic authentication
+        String authString = username + ":" + password;
+        String encodedAuthString = java.util.Base64.getEncoder().encodeToString(authString.getBytes());
+        conn.setRequestProperty("Authorization", "Basic " + encodedAuthString);
+
+        if (conn.getResponseCode() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+        }
+
+        BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+
+        StringBuilder response = new StringBuilder();
+        String output;
+        while ((output = br.readLine()) != null) {
+            response.append(output);
+        }
+
+        conn.disconnect();
+
+       
+        JSONArray jsonArray = new JSONArray(response.toString());
+        List<String> groupNames = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            String groupName = jsonObject.getString("source");
+            if(!groupName.equals("direct_logs") && !groupName.equals("")){
+               groupNames.add(groupName);
+            }
+        }
+        String result = String.join(", ", groupNames);
+        System.out.println(result);
+
+    } catch (IOException | JSONException e) {
+        e.printStackTrace();
+    }
+}
+
     
     private static void saveFile(byte[] file, String nomeArquivo) {
         String directoryPath = "/home/ubuntu/environment/salvar/";
